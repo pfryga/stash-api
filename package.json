@@ -1,0 +1,30 @@
+{
+  "name": "stash-api",
+  "version": "1.0.0",
+  "description": "REST Client for Atlassian Stash",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ingshtrom/stash-api.git"
+  },
+  "keywords": [
+    "git",
+    "stash",
+    "atlassian",
+    "rest",
+    "api"
+  ],
+  "author": "Alex \"Ingshtrom\" Hokanson <ingshtrom.developer@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ingshtrom/stash-api/issues"
+  },
+  "homepage": "https://github.com/ingshtrom/stash-api",
+  "dependencies": {
+    "bluebird": "^2.9.14",
+    "request": "^2.53.0"
+  }
+}
