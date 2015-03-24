@@ -5,6 +5,7 @@ var request = require('request'),
     _ = require('lodash'),
     Promise = require("bluebird"),
     request = Promise.promisifyAll(require("request")),
+    utils = require('./utils'),
     defaultOptions = {
         url: '',
         body: '',
@@ -22,21 +23,21 @@ function StashApi (protocol, server, port, username, password) {
 
 // PROJECTS
 StashApi.prototype.getProjects = function getProjects () {
-    return ensureJsonResponse(request.getAsync(this.buildUrl('/projects')));
+    return utils.ensureJsonResponse(request.getAsync(this.buildUrl('/projects')));
 };
 
 // REPOS
 StashApi.prototype.getRepos = function getRepos (projKey) {
-    return ensureJsonResponse(request.getAsync(this.buildUrl('/projects/' + projKey + '/repos')));
+    return utils.ensureJsonResponse(request.getAsync(this.buildUrl('/projects/' + projKey + '/repos')));
 }
 
 // BRANCHES
 StashApi.prototype.getBranches = function getBranches (projKey, repoSlug) {
-    return ensureJsonResponse(request.getAsync(this.buildUrl('/projects/' + projKey + '/repos/' + repoSlug + '/branches')));
+    return utils.ensureJsonResponse(request.getAsync(this.buildUrl('/projects/' + projKey + '/repos/' + repoSlug + '/branches')));
 }
 
 StashApi.prototype.getDefaultBranch = function getDefaultBranch (projKey, repoSlug) {
-    return ensureJsonResponse(request.getAsync(this.buildUrl('/projects/' + projKey + '/repos/' + repoSlug + '/branches/default')));
+    return utils.ensureJsonResponse(request.getAsync(this.buildUrl('/projects/' + projKey + '/repos/' + repoSlug + '/branches/default')));
 }
 
 // PULL REQUESTS
@@ -46,20 +47,16 @@ StashApi.prototype.createPullRequest = function createPullRequest (projKey, repo
     options.url = this.buildUrl('/projects/' + projKey + '/repos/' + repoSlug + '/pull-requests');
     options.body = json;
     options.headers['Content-Length'] = Buffer.byteLength(json, 'utf8');
-    return ensureJsonResponse(request.postAsync(options))
+    return utils.ensureJsonResponse(request.postAsync(options))
+}
+
+// GROUPS
+StashApi.prototype.getGroupMembers = function getGroupMembers (queryParams) {
+    var url = utils.addQueryParams(this.buildUrl('/admin/groups/more-members'), queryParams);
+    return utils.ensureJsonResponse(request.getAsync(url));
 }
 
 // UTIL
 StashApi.prototype.buildUrl = function (endpoint) {
     return this.baseUrl + this.apiUrl + endpoint;
-}
-
-function ensureJsonResponse (promise) {
-    return promise
-    .spread(function (response, body) {
-        if (body && typeof body === 'string') {
-            body = JSON.parse(body);
-        }
-        return [response, body];
-    });
 }
