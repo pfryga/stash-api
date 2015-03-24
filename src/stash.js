@@ -20,37 +20,46 @@ function StashApi (protocol, server, port, username, password) {
     this.apiUrl = '/rest/api/1.0'
 }
 
+// PROJECTS
 StashApi.prototype.getProjects = function getProjects () {
-    return request.getAsync(this.buildUrl('/projects'));
+    return ensureJsonResponse(request.getAsync(this.buildUrl('/projects')));
 };
 
+// REPOS
 StashApi.prototype.getRepos = function getRepos (projKey) {
-    return request.getAsync(this.buildUrl('/projects/' + projKey + '/repos'));
+    return ensureJsonResponse(request.getAsync(this.buildUrl('/projects/' + projKey + '/repos')));
 }
 
+// BRANCHES
 StashApi.prototype.getBranches = function getBranches (projKey, repoSlug) {
-    return request.getAsync(this.buildUrl('/projects/' + projKey + '/repos/' + repoSlug + '/branches'));
+    return ensureJsonResponse(request.getAsync(this.buildUrl('/projects/' + projKey + '/repos/' + repoSlug + '/branches')));
 }
 
+StashApi.prototype.getDefaultBranch = function getDefaultBranch (projKey, repoSlug) {
+    return ensureJsonResponse(request.getAsync(this.buildUrl('/projects/' + projKey + '/repos/' + repoSlug + '/branches/default')));
+}
+
+// PULL REQUESTS
 StashApi.prototype.createPullRequest = function createPullRequest (projKey, repoSlug, pr) {
     var options = _.cloneDeep(defaultOptions),
         json = pr.toPostJsonString();
     options.url = this.buildUrl('/projects/' + projKey + '/repos/' + repoSlug + '/pull-requests');
     options.body = json;
     options.headers['Content-Length'] = Buffer.byteLength(json, 'utf8');
-    return request.postAsync(options);
+    return ensureJsonResponse(request.postAsync(options))
 }
 
-// TODO: finish
-// StashApi.prototype.updatePullRequest = function updatePullRequest (projKey, repoSlug, pr) {
-//     var options = _.cloneDeep(defaultOptions),
-//         json = pr.toJsonString();
-//     options.url = this.buildUrl('/projects/' + projKey + '/repos/' + repoSlug + '/pull-requests');
-//     options.body = json;
-//     options.headers['Content-Length'] = Buffer.byteLength(json, 'utf8');
-//     return request.putAsync(options);
-// }
-
+// UTIL
 StashApi.prototype.buildUrl = function (endpoint) {
     return this.baseUrl + this.apiUrl + endpoint;
+}
+
+function ensureJsonResponse (promise) {
+    return promise
+    .spread(function (response, body) {
+        if (body && typeof body === 'string') {
+            body = JSON.parse(body);
+        }
+        return [response, body];
+    });
 }
