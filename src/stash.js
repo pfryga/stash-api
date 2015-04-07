@@ -15,29 +15,17 @@ var request = require('request'),
     };
 
 module.exports.StashApi = StashApi;
+module.exports.Project = require('./resources/project').Project;
+module.exports.Branch = require('./resources/branch').Branch;
 
 function StashApi (protocol, server, port, username, password) {
     this.baseUrl = protocol + '://' + username + ':' + password + '@' + server + ':' + port;
     this.apiUrl = '/rest/api/1.0'
 }
 
-// PROJECTS
-StashApi.prototype.getProjects = function getProjects () {
-    return utils.ensureJsonResponse(request.getAsync(this.buildUrl('/projects')));
-};
-
 // REPOS
 StashApi.prototype.getRepos = function getRepos (projKey) {
     return utils.ensureJsonResponse(request.getAsync(this.buildUrl('/projects/' + projKey + '/repos')));
-}
-
-// BRANCHES
-StashApi.prototype.getBranches = function getBranches (projKey, repoSlug) {
-    return utils.ensureJsonResponse(request.getAsync(this.buildUrl('/projects/' + projKey + '/repos/' + repoSlug + '/branches')));
-}
-
-StashApi.prototype.getDefaultBranch = function getDefaultBranch (projKey, repoSlug) {
-    return utils.ensureJsonResponse(request.getAsync(this.buildUrl('/projects/' + projKey + '/repos/' + repoSlug + '/branches/default')));
 }
 
 // PULL REQUESTS
