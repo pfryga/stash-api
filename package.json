@@ -1,6 +1,6 @@
 {
   "name": "stash-api",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "REST Client for Atlassian Stash",
   "main": "src/app.js",
   "scripts": {
