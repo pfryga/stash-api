@@ -48,6 +48,10 @@ StashApi.prototype.getCommit = function getCommits (projKey, repoSlug, commitId)
 }
 
 // PULL REQUESTS
+StashApi.prototype.getPullRequests = function getCommits (projKey, repoSlug) {
+    return utils.ensureJsonResponse(request.getAsync(this.buildUrl('/projects/' + projKey + '/repos/' + repoSlug + '/pull-requests')));
+}
+
 StashApi.prototype.createPullRequest = function createPullRequest (projKey, repoSlug, pr) {
     var options = _.cloneDeep(defaultOptions),
         json = pr.toPostJsonString();
