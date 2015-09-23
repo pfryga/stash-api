@@ -17,7 +17,7 @@ var request = require('request'),
 module.exports.StashApi = StashApi;
 
 function StashApi (protocol, server, port, username, password) {
-    this.baseUrl = protocol + '://' + username + ':' + password + '@' + server + ':' + port;
+    this.baseUrl = protocol + '://' + encodeURIComponent(username) + ':' + encodeURIComponent(password) + '@' + server + ':' + port;
     this.apiUrl = '/rest/api/1.0'
 }
 
