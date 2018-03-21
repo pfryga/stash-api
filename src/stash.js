@@ -81,3 +81,13 @@ StashApi.prototype.getGroupMembers = function getGroupMembers (queryParams) {
 StashApi.prototype.buildUrl = function (endpoint) {
     return this.baseUrl + this.apiUrl + endpoint;
 };
+
+// COMMENTS
+StashApi.prototype.createPullRequestComment = function createPullRequestComment (projectKey, repositorySlug, pr, comment) {
+    var body = JSON.stringify(comment);
+    var options = _.cloneDeep(defaultOptions);
+    options.url = this.buildUrl('/projects/' + projectKey + '/repos/' + repositorySlug + '/pull-requests/' + pr + '/comments' );
+    options.body = body;
+    options.headers['Content-Length'] = Buffer.byteLength(body, 'utf8');
+    return utils.ensureJsonResponse(request.postAsync(options))
+}
